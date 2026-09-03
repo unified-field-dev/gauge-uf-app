@@ -37,12 +37,14 @@ pub fn PermissionLayout() -> impl IntoView {
                 <Navigation config=NavigationConfig::new().with_selected_value(selected_value).with_open_categories(open_categories)>
                     <NavigationMaterial slot />
                     <NavigationBody slot>
-                        <NavigationLink path=paths::PERMISSIONS value=paths::PERMISSIONS icon=icondata::AiSafetyCertificateOutlined exact=true test_id="nav-permissions">"Permissions"</NavigationLink>
-                        <NavigationLink path=paths::CREATE_PERMISSION value=paths::CREATE_PERMISSION icon=icondata::AiPlusCircleOutlined exact=true test_id="nav-create-permission">"Create Permission"</NavigationLink>
-                        <NavigationLink path="/permission/create-domain" value="/permission/create-domain" icon=icondata::AiPlusCircleOutlined exact=true test_id="nav-create-domain">"Create Domain"</NavigationLink>
-                        <NavigationLink path="/permission/requests" value="/permission/requests" icon=icondata::AiBellOutlined exact=true test_id="nav-requests">"Requests"</NavigationLink>
-                        <NavigationLink path=paths::GROUPS value=paths::GROUPS icon=icondata::AiTeamOutlined exact=true test_id="nav-groups">"Groups"</NavigationLink>
-                        <NavigationLink path=paths::CREATE_GROUP value=paths::CREATE_GROUP icon=icondata::AiUsergroupAddOutlined exact=true test_id="nav-create-group">"Create Group"</NavigationLink>
+                        <div id="permission-left-nav">
+                            <NavigationLink path=paths::PERMISSIONS value=paths::PERMISSIONS icon=icondata::AiSafetyCertificateOutlined exact=true test_id="nav-permissions">"Permissions"</NavigationLink>
+                            <NavigationLink path=paths::CREATE_PERMISSION value=paths::CREATE_PERMISSION icon=icondata::AiPlusCircleOutlined exact=true test_id="nav-create-permission">"Create Permission"</NavigationLink>
+                            <NavigationLink path="/permission/create-domain" value="/permission/create-domain" icon=icondata::AiPlusCircleOutlined exact=true test_id="nav-create-domain">"Create Domain"</NavigationLink>
+                            <NavigationLink path="/permission/requests" value="/permission/requests" icon=icondata::AiBellOutlined exact=true test_id="nav-requests">"Requests"</NavigationLink>
+                            <NavigationLink path=paths::GROUPS value=paths::GROUPS icon=icondata::AiTeamOutlined exact=true test_id="nav-groups">"Groups"</NavigationLink>
+                            <NavigationLink path=paths::CREATE_GROUP value=paths::CREATE_GROUP icon=icondata::AiUsergroupAddOutlined exact=true test_id="nav-create-group">"Create Group"</NavigationLink>
+                        </div>
                     </NavigationBody>
                 </Navigation>
             </ShellLeftNav>

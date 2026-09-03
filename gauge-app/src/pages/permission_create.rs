@@ -50,6 +50,7 @@ pub fn PermissionCreatePage() -> impl IntoView {
     };
 
     view! {
+        <div id="gauge-create-perm-page">
         <ContentContainer max_width="900px">
             <Flex vertical=true gap=FlexGap::Medium>
                 <Card>
@@ -62,6 +63,7 @@ pub fn PermissionCreatePage() -> impl IntoView {
                 </Card>
 
                 <Card>
+                    <div id="gauge-create-perm-form">
                     <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
                         <Field label="Display name">
                             <Input bind=name />
@@ -122,22 +124,28 @@ pub fn PermissionCreatePage() -> impl IntoView {
                             </MessageBar>
                         </Show>
                         <Flex justify=FlexJustify::End align=FlexAlign::Center gap=FlexGap::Small>
-                            <Button
-                                appearance=ButtonAppearance::Secondary
-                                on_click=Callback::new(move |_| navigate(crate::paths::PERMISSIONS, NavigateOptions::default()))
-                            >
-                                "Cancel"
-                            </Button>
-                            <Button appearance=ButtonAppearance::Primary on_click=Callback::new(on_submit)>
-                                "Create Permission"
-                            </Button>
+                            <div id="gauge-create-perm-cancel">
+                                <Button
+                                    appearance=ButtonAppearance::Secondary
+                                    on_click=Callback::new(move |_| navigate(crate::paths::PERMISSIONS, NavigateOptions::default()))
+                                >
+                                    "Cancel"
+                                </Button>
+                            </div>
+                            <div id="gauge-create-perm-submit">
+                                <Button appearance=ButtonAppearance::Primary on_click=Callback::new(on_submit)>
+                                    "Create Permission"
+                                </Button>
+                            </div>
                         </Flex>
                         <Body1>
                             "Owner group is automatically assigned from your user context."
                         </Body1>
                     </Flex>
+                    </div>
                 </Card>
             </Flex>
         </ContentContainer>
+        </div>
     }
 }

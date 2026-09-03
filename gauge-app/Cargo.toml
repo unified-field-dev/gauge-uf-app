@@ -35,6 +35,9 @@ log = { workspace = true }
 valence = { workspace = true, default-features = false }
 uf-product = { workspace = true, default-features = false }
 uf-integrations = { workspace = true, default-features = false }
+uf-help = { workspace = true, default-features = false }
+uf-help-macros = { workspace = true }
+inventory = { workspace = true, optional = true }
 uf-search-core = { workspace = true, default-features = false }
 lepton-shell = { workspace = true, default-features = false }
 orbital-macros = { workspace = true }
@@ -58,6 +61,7 @@ hydrate = [
     "leptos/hydrate",
     "uf-product/hydrate",
     "uf-integrations/hydrate",
+    "uf-help/hydrate",
     "orbital-theme/hydrate",
     "lepton-shell/hydrate",
     "orbital-paging/hydrate",
@@ -73,6 +77,8 @@ ssr = [
     "dep:async-trait",
     "uf-product/ssr",
     "uf-integrations/ssr",
+    "uf-help/ssr",
+    "dep:inventory",
     "orbital-theme/ssr",
     "lepton-shell/ssr",
     "uf-search-core/ssr",

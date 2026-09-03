@@ -21,6 +21,13 @@
 //!   MessageBar as the server error.
 //!   [Get started](#show-history-on-detail-pages)
 //!
+//! - **Help spotlight tours** — Route-scoped Help steps under [`mod@help_steps`]
+//!   (permissions, create flows, detail pages, groups, requests). Hosts enable
+//!   `offering-help` (or `full`) so `HelpTourPlayer` mounts; call
+//!   [`ensure_help_steps_linked`] so inventory links. Bare `/permission` matches
+//!   inventory `/permission/permissions`.
+//!   [Get started](#help-spotlight-tours)
+//!
 //! Hosts supply Valence, session chrome, and identity. Schemas, grant
 //! resolution, and Super User bootstrap stay in `gauge`.
 //!
@@ -78,7 +85,11 @@
 //! let subject_kind = Signal::derive(|| "permission".to_string());
 //! let subject_id = Signal::derive(|| permission_id.get());
 //! view! {
-//!     <HistoryDialog subject_kind=subject_kind subject_id=subject_id />
+//!     <HistoryDialog
+//!         subject_kind=subject_kind
+//!         subject_id=subject_id
+//!         trigger_id="gauge-show-history"
+//!     />
 //! }
 //! // SSR path used by the timeline fetcher (can-edit ACL):
 //! let page = get_gauge_history_page(
@@ -95,6 +106,30 @@
 //! On success the dialog shows Orbital timeline rows (relation grants as
 //! Added/Removed with Avatar). Actors without can-edit get the deny MessageBar
 //! (`Not authorized to view this history`) instead of rows.
+//!
+//! ## Help spotlight tours
+//!
+//! Permission ships Help spotlight steps for each admin route (permissions
+//! index, create permission, permission detail, create domain, groups index,
+//! create group, group detail, requests index, request detail). Hosts that
+//! enable `offering-help` (or `full`) mount `HelpTourPlayer`; call
+//! [`ensure_help_steps_linked`] at route mount so `inventory` submissions from
+//! [`mod@help_steps`] are retained. Inventory route `/permission/permissions`
+//! also matches bare `/permission` (same page).
+//!
+//! **Prerequisites:** `uf-help` hydrate/ssr features on this crate; product host
+//! with Help player mounted; authenticated session for Valence visit tracking.
+//!
+//! ```rust,ignore
+//! use gauge_app::{ensure_help_steps_linked, PermissionRoutes};
+//!
+//! ensure_help_steps_linked();
+//! // Mount PermissionRoutes inside the host <Routes> tree as usual.
+//! ```
+//!
+//! On success, visiting `/permission` (and other Permission paths) can show
+//! pending spotlight steps. Replay restarts the tour for the current route via
+//! the Help menu.
 //!
 //! Next: page modules under [`pages`], or domain APIs in `gauge`.
 //!
@@ -113,6 +148,7 @@
 //! | Mount + Features guide | this crate root |
 //! | Higgs server wrappers | [`mod@server`] |
 //! | Pages / routes | [`pages`], lazy re-exports on this root |
+//! | Help spotlight inventory | [`mod@help_steps`]; call [`ensure_help_steps_linked`] |
 //! | Shell / layout | [`shell`], [`PermissionLayout`] |
 //! | Domain `actor_can`, schemas, service | sibling crate `gauge` |
 //!
@@ -139,6 +175,8 @@ use leptos_router::{
 use uf_product_macros::uf_app;
 
 mod bridge;
+/// Help spotlight tour step inventory for Permission routes.
+pub mod help_steps;
 /// Shell layout wrapping routed pages ([`PermissionLayout`]).
 pub mod layout;
 mod lazy_routes;
@@ -154,6 +192,7 @@ pub mod e2e_lab;
 #[cfg(feature = "ssr")]
 pub use bridge::wire_gauge_permissions;
 
+pub use help_steps::ensure_help_steps_linked;
 pub use layout::PermissionLayout;
 pub use lazy_routes::{
     prefetch_family, DomainCreateRoute, GroupCreateRoute, GroupDetailRoute, GroupsIndexRoute,
@@ -183,6 +222,7 @@ uf_app! {
 #[orbital_macros::orbital_routes_extract]
 #[component(transparent)]
 pub fn PermissionRoutes() -> impl leptos_router::MatchNestedRoutes + Clone {
+    crate::help_steps::ensure_help_steps_linked();
     view! {
         <ParentRoute path=path!("permission") view=PermissionLayout>
             <Route path=path!("") view={Lazy::<PermissionsIndexRoute>::new()} />

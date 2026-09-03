@@ -4,10 +4,10 @@ const headed = !!process.env.PW_HEADED;
 
 export default defineConfig({
   testDir: "./tests",
-  timeout: 300_000,
+  timeout: 240_000,
   expect: { timeout: 60_000 },
   fullyParallel: false,
-  retries: process.env.CI ? 1 : 0,
+  retries: 0,
   workers: 1,
   reporter: [["list"]],
   use: {

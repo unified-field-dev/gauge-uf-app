@@ -41,6 +41,7 @@ pub fn RequestsIndexPage() -> impl IntoView {
     );
 
     view! {
+        <div id="gauge-requests-page">
         <ContentContainer max_width="1100px" data_testid="gauge-requests-index">
             <Flex vertical=true gap=FlexGap::Medium>
                 <Card>
@@ -52,6 +53,7 @@ pub fn RequestsIndexPage() -> impl IntoView {
                     </Flex>
                 </Card>
 
+                <div id="gauge-requests-needs-review">
                 <Card>
                     <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size200.inset()>
                         <Title3>"Needs Review"</Title3>
@@ -78,7 +80,9 @@ pub fn RequestsIndexPage() -> impl IntoView {
                                         </Flex>
                                     }.into_any(),
                                     Some(Ok(rows)) if rows.is_empty() => view! {
+                                        <div id="gauge-requests-review-open">
                                         <EmptyState message="No requests are waiting for your review." />
+                                        </div>
                                     }.into_any(),
                                     Some(Ok(rows)) => view! {
                                         <Flex vertical=true gap=FlexGap::Small>
@@ -100,11 +104,13 @@ pub fn RequestsIndexPage() -> impl IntoView {
                                                                 )}
                                                             </Caption1>
                                                         </Flex>
+                                                        <div id="gauge-requests-review-open">
                                                         <A href=format!("/permission/requests/{}", row.id)>
                                                             <Button appearance=ButtonAppearance::Subtle>
                                                                 "Open"
                                                             </Button>
                                                         </A>
+                                                        </div>
                                                     </Flex>
                                                     <CardSectionBorder />
                                                 </>
@@ -121,7 +127,9 @@ pub fn RequestsIndexPage() -> impl IntoView {
                         </Transition>
                     </Flex>
                 </Card>
+                </div>
 
+                <div id="gauge-requests-mine">
                 <Card>
                     <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size200.inset()>
                         <Title3>"My Requests"</Title3>
@@ -148,7 +156,9 @@ pub fn RequestsIndexPage() -> impl IntoView {
                                         </Flex>
                                     }.into_any(),
                                     Some(Ok(rows)) if rows.is_empty() => view! {
+                                        <div id="gauge-requests-mine-open">
                                         <EmptyState message="You have not created any permission requests yet." />
+                                        </div>
                                     }.into_any(),
                                     Some(Ok(rows)) => view! {
                                         <Flex vertical=true gap=FlexGap::Small>
@@ -170,11 +180,13 @@ pub fn RequestsIndexPage() -> impl IntoView {
                                                                 )}
                                                             </Caption1>
                                                         </Flex>
+                                                        <div id="gauge-requests-mine-open">
                                                         <A href=format!("/permission/requests/{}", row.id)>
                                                             <Button appearance=ButtonAppearance::Subtle>
                                                                 "Open"
                                                             </Button>
                                                         </A>
+                                                        </div>
                                                     </Flex>
                                                     <CardSectionBorder />
                                                 </>
@@ -191,7 +203,9 @@ pub fn RequestsIndexPage() -> impl IntoView {
                         </Transition>
                     </Flex>
                 </Card>
+                </div>
             </Flex>
         </ContentContainer>
+        </div>
     }
 }
