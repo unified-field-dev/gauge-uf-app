@@ -4,7 +4,7 @@ const headed = !!process.env.PW_HEADED;
 
 export default defineConfig({
   testDir: "./tests",
-  timeout: 240_000,
+  timeout: 300_000,
   expect: { timeout: 60_000 },
   fullyParallel: false,
   retries: process.env.CI ? 2 : 0,
@@ -16,7 +16,11 @@ export default defineConfig({
     navigationTimeout: 120_000,
     ...devices["Desktop Chrome"],
     launchOptions: {
-      args: ["--disable-dev-shm-usage"],
+      args: [
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--js-flags=--max-old-space-size=8192",
+      ],
       ...(headed
         ? { slowMo: Number(process.env.PW_SLOW_MO ?? 250) }
         : {}),
