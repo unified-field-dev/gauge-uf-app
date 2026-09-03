@@ -374,24 +374,27 @@ async function bootState(page: Page): Promise<"ready" | "error" | "loading"> {
 /**
  * Wait for Orbital hydrate to mark the document ready, then clear the boot overlay.
  *
- * Large WASM graphs can fail the first fetch on CI. Reload once when boot enters
- * `error` — never reload while still `loading` (that aborts in-flight `.wasm`
- * and sticks boot-state on error).
+ * Large WASM graphs can fail the first fetch on CI. Reload immediately when boot
+ * enters `error` (do not burn the full poll budget sitting on a terminal error).
+ * Never reload while still `loading` — that aborts in-flight `.wasm` and sticks
+ * boot-state on error.
  */
-export async function waitForHydrated(page: Page, timeoutMs = 120_000) {
-  for (let attempt = 0; attempt < 2; attempt++) {
-    try {
-      await expect.poll(async () => bootState(page), { timeout: timeoutMs }).toBe("ready");
+export async function waitForHydrated(page: Page, timeoutMs = 90_000) {
+  const deadline = Date.now() + timeoutMs;
+  let reloads = 0;
+  while (Date.now() < deadline) {
+    const state = await bootState(page);
+    if (state === "ready") {
       break;
-    } catch (err) {
-      const state = await bootState(page).catch(() => "loading" as const);
-      if (state === "error" && attempt === 0) {
-        await page.reload({ waitUntil: "load" });
-        continue;
-      }
-      throw err;
     }
+    if (state === "error" && reloads < 2) {
+      reloads += 1;
+      await page.reload({ waitUntil: "load" });
+      continue;
+    }
+    await page.waitForTimeout(250);
   }
+  await expect.poll(async () => bootState(page), { timeout: 5_000 }).toBe("ready");
   await expect(page.getByTestId("orbital-boot-overlay")).toHaveCount(0, {
     timeout: 60_000,
   });

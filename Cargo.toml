@@ -24,6 +24,10 @@ lib-features = ["hydrate"]
 bin-default-features = false
 lib-default-features = false
 disable-erase-components = true
+# Match photon/chronon/boson/spectra: ship a size-optimized WASM so CI boots do not
+# flake on a ~200MB+ debug hydrate bundle.
+lib-profile-dev = "wasm-release"
+lib-profile-release = "wasm-release"
 
 [workspace.package]
 version = "0.1.0"
@@ -114,6 +118,8 @@ uf-help = { git = "https://github.com/unified-field-dev/unified-field-product", 
 uf-help-macros = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main" }
 inventory = "0.3"
 lepton-shell = { git = "https://github.com/unified-field-dev/lepton-uf-app", branch = "main", default-features = false }
+lepton-auth = { git = "https://github.com/unified-field-dev/lepton", branch = "main", default-features = false }
+lepton-auth-ui = { git = "https://github.com/unified-field-dev/lepton", branch = "main", default-features = false }
 
 # Kits may still declare Valence/Orbital via crates.io; unify onto uf-dev git.
 # types when lepton-shell pulls crates.io uf-valence-core).
@@ -150,4 +156,23 @@ orbital-discussion = { git = "https://github.com/unified-field-dev/orbital", bra
 orbital-history = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-markdown = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-style = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+
+# Local step-up / Tier A gates not yet on published git tags.
+[patch."https://github.com/unified-field-dev/unified-field-product"]
+uf-product = { git = "https://github.com/deathbreakfast/unified-field-product", branch = "main", default-features = false }
+uf-product-macros = { git = "https://github.com/deathbreakfast/unified-field-product", branch = "main" }
+
+[patch."https://github.com/unified-field-dev/gauge"]
+gauge = { git = "https://github.com/deathbreakfast/gauge", branch = "main", default-features = false }
+
+[patch."https://github.com/unified-field-dev/lepton"]
+lepton-auth = { git = "https://github.com/deathbreakfast/lepton", branch = "main", default-features = false }
+lepton-auth-ui = { git = "https://github.com/deathbreakfast/lepton", branch = "main", default-features = false }
+lepton-host-adapter = { git = "https://github.com/deathbreakfast/lepton", branch = "main", default-features = false }
+lepton-identity = { git = "https://github.com/deathbreakfast/lepton", branch = "main", default-features = false }
+lepton-spectra-telemetry = { git = "https://github.com/deathbreakfast/lepton", branch = "main" }
+lepton-smtp = { git = "https://github.com/deathbreakfast/lepton", branch = "main" }
+lepton-sms = { git = "https://github.com/deathbreakfast/lepton", branch = "main" }
+
+# Higgs may pin Valence `tag = v0.1.2` while this workspace uses `branch = main`.
 
