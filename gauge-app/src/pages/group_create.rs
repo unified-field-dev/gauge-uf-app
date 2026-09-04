@@ -1,0 +1,91 @@
+use gauge::types::PermissionGroupCreateInput;
+use leptos::prelude::*;
+use leptos::task::spawn_local_scoped;
+use leptos_router::hooks::use_navigate;
+use leptos_router::NavigateOptions;
+use uf_product::components::{Body1, Caption1, Card};
+use uf_product::components::{ContentContainer, SpacingSize, Title3};
+use uf_product::primitives::{
+    Button, ButtonAppearance, Field, Flex, FlexAlign, FlexGap, FlexJustify, Input, MessageBar,
+    MessageBarIntent, Textarea,
+};
+
+use crate::server::create_group;
+
+/// Form page for creating a new permission group; navigates to the detail page on success.
+#[component]
+pub fn GroupCreatePage() -> impl IntoView {
+    let navigate = use_navigate();
+    let navigate_submit = navigate.clone();
+    let name = RwSignal::new(String::new());
+    let description = RwSignal::new(String::new());
+    let error = RwSignal::new(None::<String>);
+
+    let on_submit = move |_| {
+        let navigate = navigate_submit.clone();
+        let payload = PermissionGroupCreateInput {
+            name: name.get(),
+            description: description.get(),
+        };
+        spawn_local_scoped(async move {
+            match create_group(payload).await {
+                Ok(new_id) => navigate(
+                    &format!("/permission/groups/{new_id}"),
+                    NavigateOptions::default(),
+                ),
+                Err(err) => error.set(Some(err.to_string())),
+            }
+        });
+    };
+
+    view! {
+        <div id="gauge-create-group-page">
+        <ContentContainer max_width="900px">
+            <Flex vertical=true gap=FlexGap::Medium>
+                <Card>
+                    <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size200.inset()>
+                        <Title3>"Create Group"</Title3>
+                        <Caption1>
+                            "Create reusable principal groups for ownership and membership assignments."
+                        </Caption1>
+                    </Flex>
+                </Card>
+
+                <Card>
+                    <div id="gauge-create-group-form">
+                    <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
+                        <Field label="Display name">
+                            <Input bind=name />
+                        </Field>
+                        <Field label="Description">
+                            <Textarea bind=description />
+                        </Field>
+                        <Show when=move || error.get().is_some()>
+                            <MessageBar intent=MessageBarIntent::Error>
+                                {move || error.get().unwrap_or_default()}
+                            </MessageBar>
+                        </Show>
+                        <Flex justify=FlexJustify::End align=FlexAlign::Center gap=FlexGap::Small>
+                            <div id="gauge-create-group-cancel">
+                                <Button
+                                    appearance=ButtonAppearance::Secondary
+                                    on_click=Callback::new(move |_| navigate(crate::paths::GROUPS, NavigateOptions::default()))
+                                >
+                                    "Cancel"
+                                </Button>
+                            </div>
+                            <div id="gauge-create-group-submit">
+                                <Button appearance=ButtonAppearance::Primary on_click=Callback::new(on_submit)>
+                                    "Create Group"
+                                </Button>
+                            </div>
+                        </Flex>
+                        <Body1>"Groups can contain users and nested groups."</Body1>
+                    </Flex>
+                    </div>
+                </Card>
+            </Flex>
+        </ContentContainer>
+        </div>
+    }
+}
