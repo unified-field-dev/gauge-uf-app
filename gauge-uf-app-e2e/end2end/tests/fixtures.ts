@@ -372,9 +372,15 @@ async function bootState(page: Page): Promise<"ready" | "error" | "loading"> {
 }
 
 /**
- * CI evidence (gauge req.detail): SSR shell + `wasm: complete`, then Orbital
- * marks boot `error` from a non-WASM unhandledrejection (bare `fetch` match)
- * and blocks dismiss. Clear that stuck overlay so hydrate wait can finish.
+ * CI evidence (gauge run 33827545629): Orbital sets boot `error` from a
+ * non-WASM `unhandledrejection` matching bare `fetch`, then
+ * `__orbitalBootDismissOverlay` refuses to exit. Artifacts show SSR `main`
+ * interactive under "Unable to load" with `wasm` already complete — or error
+ * firing early (one ✓) while wasm still downloads.
+ *
+ * Do not gate on `e2e-auth-bootstrap`: it lives inside Suspense behind a
+ * server resource and often is not in the DOM until after dismiss.
+ * When wasm is complete, clear the error bit and re-invoke dismiss.
  */
 async function clearFalsePositiveBootError(page: Page): Promise<boolean> {
   return page.evaluate(() => {
@@ -388,25 +394,30 @@ async function clearFalsePositiveBootError(page: Page): Promise<boolean> {
     const progress = (
       window as unknown as {
         __orbitalBootProgress?: { steps?: { wasm?: string } };
+        __orbitalBootDismissOverlay?: () => void;
       }
-    ).__orbitalBootProgress;
-    const wasmComplete = progress?.steps?.wasm === "complete";
-    const shellReady = !!document.querySelector(
-      '[data-testid="e2e-auth-bootstrap"]',
     );
+    const wasmComplete = progress.__orbitalBootProgress?.steps?.wasm === "complete";
+    const shellReady = !!document.querySelector("main");
     if (!wasmComplete || !shellReady) {
       return false;
     }
-    html.setAttribute("data-orbital-hydrated", "true");
+    // Dismiss is a no-op while boot-state is error — clear first, then retry.
     html.removeAttribute("data-orbital-boot-state");
-    document.getElementById("orbital-boot-overlay")?.remove();
+    if (typeof progress.__orbitalBootDismissOverlay === "function") {
+      progress.__orbitalBootDismissOverlay();
+    }
+    if (html.getAttribute("data-orbital-hydrated") !== "true") {
+      html.setAttribute("data-orbital-hydrated", "true");
+      document.getElementById("orbital-boot-overlay")?.remove();
+    }
     return true;
   });
 }
 
 /**
- * Wait for Orbital hydrate. On terminal boot `error`, try false-positive
- * recovery first; otherwise pause then reload. Never reload while `loading`.
+ * Wait for Orbital hydrate. On terminal boot `error`, wait for wasm to finish
+ * under a false-positive error before reloading. Never reload while `loading`.
  */
 export async function waitForHydrated(page: Page, timeoutMs = 180_000) {
   const deadline = Date.now() + timeoutMs;
@@ -420,6 +431,23 @@ export async function waitForHydrated(page: Page, timeoutMs = 180_000) {
     }
     if (state === "error") {
       if (await clearFalsePositiveBootError(page)) {
+        break;
+      }
+      // False-positive can fire before wasm completes — wait, then recover.
+      const waitUntil = Math.min(Date.now() + 45_000, deadline);
+      let recovered = false;
+      while (Date.now() < waitUntil) {
+        await page.waitForTimeout(500);
+        if ((await bootState(page)) === "ready") {
+          recovered = true;
+          break;
+        }
+        if (await clearFalsePositiveBootError(page)) {
+          recovered = true;
+          break;
+        }
+      }
+      if (recovered) {
         break;
       }
       if (refreshes >= maxRefreshes) {
