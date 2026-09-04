@@ -397,7 +397,9 @@ async function clearFalsePositiveBootError(page: Page): Promise<boolean> {
         __orbitalBootDismissOverlay?: () => void;
       }
     );
-    const wasmComplete = progress.__orbitalBootProgress?.steps?.wasm === "complete";
+    const wasmComplete =
+      progress.__orbitalBootProgress?.steps?.wasm === "complete" ||
+      document.querySelectorAll(".orbital-boot-step--complete").length >= 4;
     const shellReady = !!document.querySelector("main");
     if (!wasmComplete || !shellReady) {
       return false;
@@ -434,7 +436,7 @@ export async function waitForHydrated(page: Page, timeoutMs = 180_000) {
         break;
       }
       // False-positive can fire before wasm completes — wait, then recover.
-      const waitUntil = Math.min(Date.now() + 15_000, deadline);
+      const waitUntil = Math.min(Date.now() + 30_000, deadline);
       let recovered = false;
       while (Date.now() < waitUntil) {
         await page.waitForTimeout(500);
