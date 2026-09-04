@@ -330,12 +330,15 @@ test.describe("e2e.perm.detail", () => {
     await expect(page).toHaveURL(/\/permission\/permissions\//, { timeout: 60_000 });
     await waitForHydrated(page);
     await page.getByRole("button", { name: /Delete Permission/i }).click();
-    await expect(page).toHaveURL(/\/permission/, { timeout: 60_000 });
+    // Must leave the detail URL — `/permission` alone also matches detail paths.
+    await expect(page).toHaveURL(/\/permission\/permissions\/?$/, { timeout: 60_000 });
     await waitForHydrated(page);
     await page.goto("/permission/permissions", { waitUntil: "domcontentloaded" });
     await waitForHydrated(page);
     await page.getByPlaceholder(/Search by permission/i).fill(name);
-    await expect(page.getByText(name, { exact: true })).toHaveCount(0, { timeout: 30_000 });
+    await expect(
+      page.locator("#gauge-permissions-list").getByText(name, { exact: true }),
+    ).toHaveCount(0, { timeout: 30_000 });
   });
 
   test("e2e.perm.detail.history_entries", async ({ page }) => {

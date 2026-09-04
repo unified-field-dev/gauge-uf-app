@@ -39,6 +39,7 @@ pub fn GroupCreatePage() -> impl IntoView {
     };
 
     view! {
+        <div id="gauge-create-group-page">
         <ContentContainer max_width="900px">
             <Flex vertical=true gap=FlexGap::Medium>
                 <Card>
@@ -51,6 +52,7 @@ pub fn GroupCreatePage() -> impl IntoView {
                 </Card>
 
                 <Card>
+                    <div id="gauge-create-group-form">
                     <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
                         <Field label="Display name">
                             <Input bind=name />
@@ -64,20 +66,26 @@ pub fn GroupCreatePage() -> impl IntoView {
                             </MessageBar>
                         </Show>
                         <Flex justify=FlexJustify::End align=FlexAlign::Center gap=FlexGap::Small>
-                            <Button
-                                appearance=ButtonAppearance::Secondary
-                                on_click=Callback::new(move |_| navigate(crate::paths::GROUPS, NavigateOptions::default()))
-                            >
-                                "Cancel"
-                            </Button>
-                            <Button appearance=ButtonAppearance::Primary on_click=Callback::new(on_submit)>
-                                "Create Group"
-                            </Button>
+                            <div id="gauge-create-group-cancel">
+                                <Button
+                                    appearance=ButtonAppearance::Secondary
+                                    on_click=Callback::new(move |_| navigate(crate::paths::GROUPS, NavigateOptions::default()))
+                                >
+                                    "Cancel"
+                                </Button>
+                            </div>
+                            <div id="gauge-create-group-submit">
+                                <Button appearance=ButtonAppearance::Primary on_click=Callback::new(on_submit)>
+                                    "Create Group"
+                                </Button>
+                            </div>
                         </Flex>
                         <Body1>"Groups can contain users and nested groups."</Body1>
                     </Flex>
+                    </div>
                 </Card>
             </Flex>
         </ContentContainer>
+        </div>
     }
 }

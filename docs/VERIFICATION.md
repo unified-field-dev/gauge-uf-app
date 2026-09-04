@@ -48,6 +48,21 @@ Do not Ctrl-C; the process exits when Playwright finishes. The e2e host mounts
 permission pages eagerly (same components as `PermissionRoutes`); production
 split hosts still use Lazy + `cargo leptos --split`.
 
+### leptos-lints (CI job `leptos-lints`)
+
+Needs `cargo-dylint` / `dylint-link` 6.0.1 and toolchain `nightly-2025-05-14`
+(see `.github/workflows/ci.yml`). Workspace `[workspace.metadata.dylint]` pins
+the library; rustc deny names are declared under `[workspace.lints.rust]`.
+
+```bash
+# cargo install cargo-dylint --locked --version 6.0.1
+# cargo install dylint-link --locked --version 6.0.1
+# rustup toolchain install nightly-2025-05-14 --component rustc-dev,llvm-tools-preview
+export CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback
+export RUSTFLAGS="-D warnings -Zcrate-attr=feature(stdarch_x86_avx512)"
+cargo dylint --all -p gauge-app --no-deps -- --features hydrate
+```
+
 ## Guide-contract audit
 
 After a successful `cargo doc` (absolute `--doc-root` required — relative paths

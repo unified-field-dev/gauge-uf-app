@@ -62,6 +62,7 @@ pub fn RequestDetailPage() -> impl IntoView {
                                             <Caption1>{format!("ID: {}", row.id)}</Caption1>
                                         </Flex>
                                     </Card>
+                                    <div id="gauge-request-detail-summary">
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size200.inset()>
                                             <Body1>{format!("Target: {}", row.target_label)}</Body1>
@@ -79,15 +80,20 @@ pub fn RequestDetailPage() -> impl IntoView {
                                             </Caption1>
                                         </Flex>
                                     </Card>
+                                    </div>
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size200.inset()>
                                             <Title3>"Reason"</Title3>
                                             <Body1>{row.reason}</Body1>
                                         </Flex>
                                     </Card>
-                                    <Show when=move || row.can_review && is_pending>
+                                    <Show when=move || row.can_review && is_pending fallback=move || view! {
+                                        <div id="gauge-request-deny"></div>
+                                        <div id="gauge-request-approve"></div>
+                                    }>
                                         <Card>
                                             <Flex justify=FlexJustify::End gap=FlexGap::Small padding=SpacingSize::Size200.inset()>
+                                                <div id="gauge-request-deny">
                                                 <Button
                                                     appearance=ButtonAppearance::Secondary
                                                     on_click=Callback::new(move |_| {
@@ -96,6 +102,8 @@ pub fn RequestDetailPage() -> impl IntoView {
                                                 >
                                                     "Deny"
                                                 </Button>
+                                                </div>
+                                                <div id="gauge-request-approve">
                                                 <Button
                                                     appearance=ButtonAppearance::Primary
                                                     on_click=Callback::new(move |_| {
@@ -104,6 +112,7 @@ pub fn RequestDetailPage() -> impl IntoView {
                                                 >
                                                     "Approve"
                                                 </Button>
+                                                </div>
                                             </Flex>
                                         </Card>
                                     </Show>

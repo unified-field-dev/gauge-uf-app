@@ -1,10 +1,13 @@
 //! Host composition: wire Gauge `actor_can` into uf-product permission gates.
 
+#[cfg(feature = "ssr")]
 use std::sync::Arc;
 
+#[cfg(feature = "ssr")]
 use leptos::prelude::*;
 
 /// Gauge-backed [`uf_product::permissions::PermissionBackend`].
+#[cfg(feature = "ssr")]
 pub struct GaugePermissionBackend;
 
 #[cfg(feature = "ssr")]

@@ -40,6 +40,7 @@ pub fn DomainCreatePage() -> impl IntoView {
     };
 
     view! {
+        <div id="gauge-create-domain-page">
         <ContentContainer max_width="900px">
             <Flex vertical=true gap=FlexGap::Medium>
                 <Card>
@@ -52,6 +53,7 @@ pub fn DomainCreatePage() -> impl IntoView {
                 </Card>
 
                 <Card>
+                    <div id="gauge-create-domain-form">
                     <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
                         <Field label="Domain name">
                             <Input bind=name />
@@ -65,22 +67,28 @@ pub fn DomainCreatePage() -> impl IntoView {
                             </MessageBar>
                         </Show>
                         <Flex justify=FlexJustify::End align=FlexAlign::Center gap=FlexGap::Small>
-                            <Button
-                                appearance=ButtonAppearance::Secondary
-                                on_click=Callback::new(move |_| navigate(crate::paths::PERMISSIONS, NavigateOptions::default()))
-                            >
-                                "Cancel"
-                            </Button>
-                            <Button appearance=ButtonAppearance::Primary on_click=Callback::new(on_submit)>
-                                "Create Domain"
-                            </Button>
+                            <div id="gauge-create-domain-cancel">
+                                <Button
+                                    appearance=ButtonAppearance::Secondary
+                                    on_click=Callback::new(move |_| navigate(crate::paths::PERMISSIONS, NavigateOptions::default()))
+                                >
+                                    "Cancel"
+                                </Button>
+                            </div>
+                            <div id="gauge-create-domain-submit">
+                                <Button appearance=ButtonAppearance::Primary on_click=Callback::new(on_submit)>
+                                    "Create Domain"
+                                </Button>
+                            </div>
                         </Flex>
                         <Body1>
                             "You can assign this domain to new and existing permissions."
                         </Body1>
                     </Flex>
+                    </div>
                 </Card>
             </Flex>
         </ContentContainer>
+        </div>
     }
 }

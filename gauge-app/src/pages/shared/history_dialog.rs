@@ -211,13 +211,18 @@ fn GaugeHistoryTimeline(source: RecordId) -> impl IntoView {
 pub fn HistoryDialog(
     #[prop(into)] subject_kind: Signal<String>,
     #[prop(into)] subject_id: Signal<String>,
+    /// Spotlight anchor on the Show History trigger (`id=`).
+    #[prop(into)]
+    trigger_id: &'static str,
 ) -> impl IntoView {
     let open = RwSignal::new(false);
 
     view! {
-        <Button appearance=ButtonAppearance::Subtle on_click=Callback::new(move |_| open.set(true))>
-            "Show History"
-        </Button>
+        <div id=trigger_id>
+            <Button appearance=ButtonAppearance::Subtle on_click=Callback::new(move |_| open.set(true))>
+                "Show History"
+            </Button>
+        </div>
 
         <Dialog open=open>
             <DialogSurface>

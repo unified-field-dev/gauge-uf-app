@@ -194,6 +194,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                             let members = RwSignal::new(row.members.clone());
                             view! {
                                 <Flex vertical=true gap=FlexGap::Medium>
+                                    <div id="gauge-group-detail-header">
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size200.inset()>
                                             <Flex justify=FlexJustify::SpaceBetween align=FlexAlign::Center gap=FlexGap::Small>
@@ -201,6 +202,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                     <Title3>"Group Detail"</Title3>
                                                     <Caption1>{format!("ID: {}", row.id.clone())}</Caption1>
                                                 </Flex>
+                                                <div id="gauge-group-request-access">
                                                 <Show when=move || row.can_request_access>
                                                     <Button
                                                         appearance=ButtonAppearance::Primary
@@ -209,9 +211,11 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                         "Request Access"
                                                     </Button>
                                                 </Show>
+                                                </div>
                                             </Flex>
                                         </Flex>
                                     </Card>
+                                    </div>
 
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
@@ -219,6 +223,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                 <Title3>"Owners"</Title3>
                                                 <Caption1>"Owners can edit this group, manage owners, and manage members."</Caption1>
                                             </Flex>
+                                            <div id="gauge-group-owners-picker">
                                             <SearchSourcePicker
                                                 search_sources=Signal::derive(|| {
                                                     vec![PermissionSearchSourceId::User.into()]
@@ -228,11 +233,13 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                 on_search=owner_request_search
                                                 on_select=on_select_owner
                                             />
+                                            </div>
                                             <Show when=move || owner_picker_error.get().is_some()>
                                                 <MessageBar intent=MessageBarIntent::Error>
                                                     {move || owner_picker_error.get().unwrap_or_default()}
                                                 </MessageBar>
                                             </Show>
+                                            <div id="gauge-group-owner-remove">
                                             <Show when=move || !owner_users.get().is_empty() fallback=move || view! {
                                                 <EmptyState message="No owners are assigned to this group." />
                                             }>
@@ -286,9 +293,11 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                     </For>
                                                 </Flex>
                                             </Show>
+                                            </div>
                                         </Flex>
                                     </Card>
 
+                                    <div id="gauge-group-edit-form">
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
                                             <Field label="Name">
@@ -301,8 +310,10 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                 <HistoryDialog
                                                     subject_kind=Signal::derive(|| "permission_group".to_string())
                                                     subject_id=Signal::derive(move || group_id.get())
+                                                    trigger_id="gauge-group-show-history"
                                                 />
                                                 <Flex gap=FlexGap::Small>
+                                                    <div id="gauge-group-delete">
                                                     <Button
                                                         appearance=ButtonAppearance::Secondary
                                                         on_click=Callback::new(move |_| {
@@ -317,9 +328,12 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                     >
                                                         "Delete Group"
                                                     </Button>
+                                                    </div>
+                                                    <div id="gauge-group-save">
                                                     <Button appearance=ButtonAppearance::Primary on_click=Callback::new(save)>
                                                         "Save Changes"
                                                     </Button>
+                                                    </div>
                                                 </Flex>
                                             </Flex>
                                             <Show when=move || error.get().is_some()>
@@ -329,6 +343,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                                             </Show>
                                         </Flex>
                                     </Card>
+                                    </div>
 
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
@@ -336,6 +351,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                 <Title3>"Members"</Title3>
                                                 <Caption1>"Manage user and nested-group membership."</Caption1>
                                             </Flex>
+                                            <div id="gauge-group-members-picker">
                                             <SearchSourcePicker
                                                 search_sources=Signal::derive(|| vec![
                                                     PermissionSearchSourceId::User.into(),
@@ -347,11 +363,13 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                 on_search=request_search
                                                 on_select=on_select
                                             />
+                                            </div>
                                             <Show when=move || picker_error.get().is_some()>
                                                 <MessageBar intent=MessageBarIntent::Error>
                                                     {move || picker_error.get().unwrap_or_default()}
                                                 </MessageBar>
                                             </Show>
+                                            <div id="gauge-group-member-remove">
                                             <Show when=move || !members.get().is_empty() fallback=move || view! {
                                                 <EmptyState message="No members are currently assigned to this group." />
                                             }>
@@ -408,6 +426,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                     </For>
                                                 </Flex>
                                             </Show>
+                                            </div>
                                         </Flex>
                                     </Card>
                                     <Dialog open=confirm_remove_open>

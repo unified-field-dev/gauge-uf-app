@@ -19,6 +19,7 @@ use leptos_router::{
 /// Same paths as [`gauge_app::PermissionRoutes`], without Lazy route views.
 #[component(transparent)]
 pub fn PermissionRoutesEager() -> impl leptos_router::MatchNestedRoutes + Clone {
+    gauge_app::ensure_help_steps_linked();
     view! {
         <ParentRoute path=path!("permission") view=PermissionLayout>
             <Route path=path!("") view=PermissionsIndexPage />

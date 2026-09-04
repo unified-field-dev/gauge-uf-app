@@ -148,6 +148,7 @@ pub fn PermissionDetailPage() -> impl IntoView {
                             let allow_list = RwSignal::new(row.allow_list.clone());
                             view! {
                                 <Flex vertical=true gap=FlexGap::Medium>
+                                    <div id="gauge-perm-detail-header">
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size200.inset()>
                                             <Flex justify=FlexJustify::SpaceBetween align=FlexAlign::Center gap=FlexGap::Small>
@@ -155,6 +156,7 @@ pub fn PermissionDetailPage() -> impl IntoView {
                                                     <Title3>"Permission Detail"</Title3>
                                                     <Caption1>{format!("ID: {}", row.id.clone())}</Caption1>
                                                 </Flex>
+                                                <div id="gauge-perm-request-access">
                                                 <Show when=move || row.can_request_access>
                                                     <Button
                                                         appearance=ButtonAppearance::Primary
@@ -163,10 +165,13 @@ pub fn PermissionDetailPage() -> impl IntoView {
                                                         "Request Access"
                                                     </Button>
                                                 </Show>
+                                                </div>
                                             </Flex>
                                         </Flex>
                                     </Card>
+                                    </div>
 
+                                    <div id="gauge-perm-edit-form">
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
                                             <Field label="Name">
@@ -230,8 +235,10 @@ pub fn PermissionDetailPage() -> impl IntoView {
                                                 <HistoryDialog
                                                     subject_kind=Signal::derive(|| "permission".to_string())
                                                     subject_id=Signal::derive(move || permission_id.get())
+                                                    trigger_id="gauge-show-history"
                                                 />
                                                 <Flex gap=FlexGap::Small>
+                                                    <div id="gauge-perm-delete">
                                                     <Button
                                                         appearance=ButtonAppearance::Secondary
                                                         on_click=Callback::new(move |_| {
@@ -246,9 +253,12 @@ pub fn PermissionDetailPage() -> impl IntoView {
                                                     >
                                                         "Delete Permission"
                                                     </Button>
+                                                    </div>
+                                                    <div id="gauge-perm-save">
                                                     <Button appearance=ButtonAppearance::Primary on_click=Callback::new(save)>
                                                         "Save Changes"
                                                     </Button>
+                                                    </div>
                                                 </Flex>
                                             </Flex>
                                             <Show when=move || error.get().is_some()>
@@ -258,6 +268,7 @@ pub fn PermissionDetailPage() -> impl IntoView {
                                             </Show>
                                         </Flex>
                                     </Card>
+                                    </div>
 
                                     <Card>
                                         <Flex vertical=true gap=FlexGap::Medium padding=SpacingSize::Size200.inset()>
@@ -265,6 +276,7 @@ pub fn PermissionDetailPage() -> impl IntoView {
                                                 <Title3>"Allow List"</Title3>
                                                 <Caption1>"Add users or groups that should inherit this permission."</Caption1>
                                             </Flex>
+                                            <div id="gauge-perm-allow-picker">
                                             <SearchSourcePicker
                                                 search_sources=Signal::derive(|| vec![
                                                     PermissionSearchSourceId::User.into(),
@@ -276,11 +288,13 @@ pub fn PermissionDetailPage() -> impl IntoView {
                                                 on_search=request_search
                                                 on_select=on_select
                                             />
+                                            </div>
                                             <Show when=move || picker_error.get().is_some()>
                                                 <MessageBar intent=MessageBarIntent::Error>
                                                     {move || picker_error.get().unwrap_or_default()}
                                                 </MessageBar>
                                             </Show>
+                                            <div id="gauge-perm-allow-remove">
                                             <Show when=move || !allow_list.get().is_empty() fallback=move || view! {
                                                 <EmptyState message="No principals are currently in the allow list." />
                                             }>
@@ -337,6 +351,7 @@ pub fn PermissionDetailPage() -> impl IntoView {
                                                     </For>
                                                 </Flex>
                                             </Show>
+                                            </div>
                                         </Flex>
                                     </Card>
                                     <Dialog open=confirm_remove_open>

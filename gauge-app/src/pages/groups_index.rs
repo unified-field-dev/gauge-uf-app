@@ -26,6 +26,7 @@ pub fn GroupsIndexPage() -> impl IntoView {
     );
 
     view! {
+        <div id="gauge-groups-page">
         <ContentContainer max_width="1100px" data_testid="gauge-groups-index">
             <Flex vertical=true gap=FlexGap::Medium>
                 <Card>
@@ -41,26 +42,31 @@ pub fn GroupsIndexPage() -> impl IntoView {
                                 "Maintain owner and membership group structures for permission control."
                             </Caption1>
                         </Flex>
-                        <A href=crate::paths::CREATE_GROUP>
-                            <Button appearance=ButtonAppearance::Primary>
-                                "Create Group"
-                            </Button>
-                        </A>
+                        <div id="gauge-groups-create">
+                            <A href=crate::paths::CREATE_GROUP>
+                                <Button appearance=ButtonAppearance::Primary>
+                                    "Create Group"
+                                </Button>
+                            </A>
+                        </div>
                     </Flex>
                 </Card>
 
                 <Card>
-                    <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size160.inset()>
-                        <Field label="Search">
-                            <Input
-                                bind=search
-                                appearance=InputAppearance::with_placeholder("Search by group name or description")
-                            />
-                        </Field>
-                    </Flex>
+                    <div id="gauge-groups-search">
+                        <Flex vertical=true gap=FlexGap::Small padding=SpacingSize::Size160.inset()>
+                            <Field label="Search">
+                                <Input
+                                    bind=search
+                                    appearance=InputAppearance::with_placeholder("Search by group name or description")
+                                />
+                            </Field>
+                        </Flex>
+                    </div>
                 </Card>
 
                 <Card>
+                    <div id="gauge-groups-list">
                     <Transition fallback=move || view! {
                         <CardContent>
                             <Flex vertical=true gap=FlexGap::Small>
@@ -113,11 +119,13 @@ pub fn GroupsIndexPage() -> impl IntoView {
                                                             <Body1>{row.name.clone()}</Body1>
                                                             <Caption1>{row.description.clone()}</Caption1>
                                                         </Flex>
-                                                        <A href=format!("/permission/groups/{}", row.id)>
-                                                            <Button appearance=ButtonAppearance::Subtle>
-                                                                "Open"
-                                                            </Button>
-                                                        </A>
+                                                        <div id="gauge-group-row-open">
+                                                            <A href=format!("/permission/groups/{}", row.id)>
+                                                                <Button appearance=ButtonAppearance::Subtle>
+                                                                    "Open"
+                                                                </Button>
+                                                            </A>
+                                                        </div>
                                                     </Flex>
                                                     <CardSectionBorder />
                                                 </>
@@ -138,8 +146,10 @@ pub fn GroupsIndexPage() -> impl IntoView {
                             }
                         }}
                     </Transition>
+                    </div>
                 </Card>
             </Flex>
         </ContentContainer>
+        </div>
     }
 }

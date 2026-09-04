@@ -24,6 +24,10 @@ lib-features = ["hydrate"]
 bin-default-features = false
 lib-default-features = false
 disable-erase-components = true
+# Match photon/chronon/boson/spectra: ship a size-optimized WASM so CI boots do not
+# flake on a ~200MB+ debug hydrate bundle.
+lib-profile-dev = "wasm-release"
+lib-profile-release = "wasm-release"
 
 [workspace.package]
 version = "0.1.0"
@@ -61,6 +65,8 @@ must_use_candidate = "allow"
 missing_errors_doc = "allow"
 missing_panics_doc = "allow"
 return_self_not_must_use = "allow"
+# TypedBuilder (Leptos props) emits empty enums under clippy --all-targets.
+empty_enums = "allow"
 
 [profile.wasm-release]
 inherits = "release"
@@ -108,6 +114,9 @@ uf-product = { git = "https://github.com/unified-field-dev/unified-field-product
 uf-integrations = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main", default-features = false }
 uf-search-core = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main", default-features = false }
 uf-product-macros = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main" }
+uf-help = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main", default-features = false }
+uf-help-macros = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main" }
+inventory = "0.3"
 lepton-shell = { git = "https://github.com/unified-field-dev/lepton-uf-app", branch = "main", default-features = false }
 
 # Kits may still declare Valence/Orbital via crates.io; unify onto uf-dev git.
