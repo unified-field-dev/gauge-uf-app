@@ -40,6 +40,7 @@ uf-help-macros = { workspace = true }
 inventory = { workspace = true, optional = true }
 uf-search-core = { workspace = true, default-features = false }
 lepton-shell = { workspace = true, default-features = false }
+lepton-auth = { workspace = true, default-features = false }
 orbital-macros = { workspace = true }
 orbital-theme = { workspace = true, default-features = false }
 orbital-paging = { workspace = true }
@@ -64,6 +65,7 @@ hydrate = [
     "uf-help/hydrate",
     "orbital-theme/hydrate",
     "lepton-shell/hydrate",
+    "lepton-auth/hydrate",
     "orbital-paging/hydrate",
     "orbital-history/hydrate",
     "record-history-leptos/hydrate"]
@@ -81,6 +83,8 @@ ssr = [
     "dep:inventory",
     "orbital-theme/ssr",
     "lepton-shell/ssr",
+    "lepton-auth/ssr",
+    "lepton-auth/totp",
     "uf-search-core/ssr",
     "gauge/ssr",
     "valence/mem",

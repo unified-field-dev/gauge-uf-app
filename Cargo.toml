@@ -118,6 +118,7 @@ uf-help = { git = "https://github.com/unified-field-dev/unified-field-product", 
 uf-help-macros = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main" }
 inventory = "0.3"
 lepton-shell = { git = "https://github.com/unified-field-dev/lepton-uf-app", branch = "main", default-features = false }
+lepton-auth = { git = "https://github.com/unified-field-dev/lepton", branch = "main", default-features = false }
 
 # Kits may still declare Valence/Orbital via crates.io; unify onto uf-dev git.
 # types when lepton-shell pulls crates.io uf-valence-core).

@@ -116,7 +116,7 @@ pub fn GroupDetailPage() -> impl IntoView {
             let res = if item.source_id == PermissionSearchSourceId::PermissionGroup.as_str() {
                 add_group_group(group_id, item.id).await
             } else {
-                add_group_user(group_id, item.id).await
+                add_group_user(group_id, item.id, String::new()).await
             };
             if let Err(err) = res {
                 error.set(Some(err.to_string()));
@@ -166,7 +166,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                 error.set(Some("Only users can be owners.".to_string()));
                 return;
             }
-            match add_group_owner_user(group_id, item.id).await {
+            match add_group_owner_user(group_id, item.id, String::new()).await {
                 Ok(()) => refresh.update(|n| *n += 1),
                 Err(err) => error.set(Some(err.to_string())),
             }
@@ -463,7 +463,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                                     let result = if is_group {
                                                                         remove_group_group(gid, principal_id).await
                                                                     } else {
-                                                                        remove_group_user(gid, principal_id).await
+                                                                        remove_group_user(gid, principal_id, String::new()).await
                                                                     };
                                                                     if let Err(err) = result {
                                                                         error.set(Some(err.to_string()));
@@ -513,7 +513,7 @@ pub fn GroupDetailPage() -> impl IntoView {
                                                             let gid = group_id.get();
                                                             if let Some((owner_user_id, _)) = pending {
                                                                 spawn_local_scoped(async move {
-                                                                    let result = remove_group_owner_user(gid, owner_user_id).await;
+                                                                    let result = remove_group_owner_user(gid, owner_user_id, String::new()).await;
                                                                     if let Err(err) = result {
                                                                         error.set(Some(err.to_string()));
                                                                     } else {
