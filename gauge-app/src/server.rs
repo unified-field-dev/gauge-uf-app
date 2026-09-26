@@ -160,6 +160,95 @@ pub async fn create_domain(
         .unwrap_or_default())
 }
 
+/// Fetch one permission domain by id.
+#[uf_product_macros::server]
+pub async fn get_domain(
+    /// Unique identifier of the domain to fetch.
+    id: String,
+) -> Result<Option<PermissionDomainDetailDto>, ServerFnError> {
+    let ctx = higgs::Higgs::from_request().await?;
+    require_session(&ctx)?;
+    gauge::service::get_domain_detail(&id, &valence_from_ctx(&ctx)?)
+        .await
+        .map_err(|e| map_service_err("load domain detail", e))
+}
+
+/// Payload for [`update_domain`].
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct UpdateDomainInput {
+    /// Domain id to update.
+    pub id: String,
+    /// New display name.
+    pub name: String,
+    /// New description.
+    pub description: String,
+}
+
+/// Update a permission domain.
+#[uf_product_macros::server(permission = "GaugeAdmin")]
+pub async fn update_domain(
+    /// Updated fields for the target domain.
+    input: UpdateDomainInput,
+) -> Result<(), ServerFnError> {
+    let ctx = higgs::Higgs::from_request().await?;
+    require_session(&ctx)?;
+    gauge::service::update_domain(
+        &input.id,
+        input.name,
+        input.description,
+        &valence_from_ctx(&ctx)?,
+    )
+    .await
+    .map_err(|e| map_service_err("update domain", e))?;
+    Ok(())
+}
+
+/// Delete a permission domain.
+#[uf_product_macros::server(permission = "GaugeAdmin", step_up)]
+pub async fn delete_domain(
+    /// Unique identifier of the domain to delete.
+    id: String,
+) -> Result<(), ServerFnError> {
+    let ctx = higgs::Higgs::from_request().await?;
+    require_session(&ctx)?;
+    gauge::service::delete_domain(&id, &valence_from_ctx(&ctx)?)
+        .await
+        .map_err(|e| map_service_err("delete domain", e))?;
+    Ok(())
+}
+
+/// Add a user as an owner of a domain.
+#[uf_product_macros::server(permission = "GaugeAdmin", step_up)]
+pub async fn add_domain_owner_user(
+    /// Unique identifier of the domain to add the owner to.
+    domain_id: String,
+    /// Unique identifier of the user to add as an owner.
+    user_id: String,
+) -> Result<(), ServerFnError> {
+    let ctx = higgs::Higgs::from_request().await?;
+    require_session(&ctx)?;
+    gauge::service::add_domain_owner_user(&domain_id, &user_id, &valence_from_ctx(&ctx)?)
+        .await
+        .map_err(|e| map_service_err("add domain owner user", e))?;
+    Ok(())
+}
+
+/// Remove a user from the owner list of a domain.
+#[uf_product_macros::server(permission = "GaugeAdmin", step_up)]
+pub async fn remove_domain_owner_user(
+    /// Unique identifier of the domain to remove the owner from.
+    domain_id: String,
+    /// Unique identifier of the user to remove from the owner list.
+    user_id: String,
+) -> Result<(), ServerFnError> {
+    let ctx = higgs::Higgs::from_request().await?;
+    require_session(&ctx)?;
+    gauge::service::remove_domain_owner_user(&domain_id, &user_id, &valence_from_ctx(&ctx)?)
+        .await
+        .map_err(|e| map_service_err("remove domain owner user", e))?;
+    Ok(())
+}
+
 /// Create a permission and return its id.
 #[uf_product_macros::server(permission = "GaugeAdmin", step_up)]
 pub async fn create_permission(
