@@ -101,7 +101,7 @@ chrono = { version = "0.4", default-features = false, features = ["clock", "std"
 totp-rs = { version = "5.7", default-features = false }
 
 valence = { package = "uf-valence", git = "https://github.com/unified-field-dev/valence", branch = "main", default-features = false }
-gauge = { git = "https://github.com/deathbreakfast/gauge", branch = "main", default-features = false }
+gauge = { git = "https://github.com/unified-field-dev/gauge", branch = "main", default-features = false }
 higgs = { git = "https://github.com/unified-field-dev/higgs", branch = "main", default-features = false }
 higgs-identity = { git = "https://github.com/unified-field-dev/higgs", branch = "main" }
 lepton = { git = "https://github.com/unified-field-dev/lepton", branch = "main", default-features = false }
