@@ -5,10 +5,11 @@ insecure session cookies, `POST /api/test/seed-data`, harness auth (no lepton si
 
 ## Run
 
+From the repository root:
+
 ```bash
 export CARGO_BUILD_JOBS=1
 export CARGO_TARGET_DIR=target-gauge-uf-app
-cd /home/seanorourke/unified-field/L4-composers/gauge-uf-app
 cd gauge-uf-app-e2e/end2end && npm ci && npx playwright install chromium && cd ../..
 cargo leptos end-to-end --project gauge-uf-app-e2e
 ```
@@ -87,4 +88,4 @@ Search (K12): `e2e.search.principals_initial`, `principals_query_user`,
 | Loading-only spinners | Smokes, not primary |
 
 Domain service contracts stay in `gauge` `permission_domain_contract` / privacy suites.
-Full lepton credential matrices: `lepton-auth-ui-e2e`. L5 composition: `uf-embedded-e2e`.
+Full lepton credential matrices: `lepton-auth-ui-e2e`. Full-stack composition: `uf-embedded-e2e`.
