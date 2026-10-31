@@ -2319,7 +2319,7 @@ dependencies = [
 [[package]]
 name = "lepton-shell"
 version = "0.2.0"
-source = "git+https://github.com/unified-field-dev/lepton-uf-app?branch=main#aac837a06e3e85ed1bfc8bc7f8b8ca7f7c4506dd"
+source = "git+https://github.com/unified-field-dev/lepton-uf-app?branch=main#6fb5bcfd8b1321d3aa094379c145a539b926809f"
 dependencies = [
  "crc32fast",
  "lepton-auth",
